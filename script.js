@@ -1,26 +1,24 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Add click event to category boxes
-  const categories = document.querySelectorAll(".category");
-  categories.forEach(category => {
-      category.addEventListener("click", () => {
-          alert(`You selected the ${category.textContent} category!`);
-      });
-  });
+document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const navMenu = document.querySelector('.nav-menu');
 
-  // Add click event to the hero button
-  const heroButton = document.querySelector(".hero button");
-  heroButton.addEventListener("click", () => {
-      alert("Redirecting you to the shop now page...");
-  });
+    mobileMenuBtn.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        
+        // Animate hamburger to X
+        const spans = mobileMenuBtn.querySelectorAll('span');
+        spans.forEach(span => span.classList.toggle('active'));
+        
+        // Prevent body scrolling when menu is open
+        document.body.classList.toggle('menu-open');
+    });
 
-  // Search bar functionality
-  const searchBar = document.querySelector(".search-bar button");
-  searchBar.addEventListener("click", () => {
-      const query = document.querySelector(".search-bar input").value;
-      if (query.trim()) {
-          alert(`Searching for: ${query}`);
-      } else {
-          alert("Please enter a search term.");
-      }
-  });
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!navMenu.contains(e.target) && !mobileMenuBtn.contains(e.target) && navMenu.classList.contains('active')) {
+            navMenu.classList.remove('active');
+            mobileMenuBtn.querySelectorAll('span').forEach(span => span.classList.remove('active'));
+            document.body.classList.remove('menu-open');
+        }
+    });
 });
