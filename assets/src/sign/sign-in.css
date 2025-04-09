@@ -1,0 +1,186 @@
+/* styles.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #f3f3f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo h1 {
+  color: #232f3e;
+  font-size: 28px;
+}
+
+.card {
+  background-color: white;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #232f3e;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #333;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ff9900;
+  box-shadow: 0 0 0 2px rgba(255, 153, 0, 0.2);
+}
+
+.remember-forgot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-group input {
+  margin-right: 6px;
+}
+
+.forgot-password {
+  color: #0066c0;
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+  color: #c45500;
+}
+
+.btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background-color: #ff9900;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #e88e00;
+}
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 14px;
+  color: #767676;
+  position: relative;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background-color: #ddd;
+}
+
+.divider::before {
+  left: 0;
+}
+
+.divider::after {
+  right: 0;
+}
+
+.btn-secondary {
+  background-color: #e7e9ec;
+  color: #111;
+  border: 1px solid #adb1b8;
+}
+
+.btn-secondary:hover {
+  background-color: #d6d9dc;
+}
+
+.toggle-form {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.toggle-form a {
+  color: #0066c0;
+  text-decoration: none;
+}
+
+.toggle-form a:hover {
+  text-decoration: underline;
+  color: #c45500;
+}
+
+.error-message {
+  color: #c40000;
+  font-size: 12px;
+  margin-top: 4px;
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .container {
+      padding: 15px;
+  }
+  
+  .card {
+      padding: 20px;
+  }
+}
