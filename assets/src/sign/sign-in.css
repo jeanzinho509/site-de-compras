@@ -175,6 +175,22 @@ input:focus {
   display: none;
 }
 
+.back-to-home {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.back-to-home a {
+  color: #0066c0;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-to-home a:hover {
+  text-decoration: underline;
+  color: #c45500;
+}
+
 @media (max-width: 480px) {
   .container {
       padding: 15px;
