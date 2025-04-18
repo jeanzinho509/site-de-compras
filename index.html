@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HTeasy - Marketplace</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header class="navbar">
@@ -26,15 +27,32 @@
                       <option value="Categories">Categories</option>
                       <option value="Vehicles.html">Vehicles</option>
                       <option value="Electronics.html">Electronics</option>
-                      <option value="Fashion">Fashion</option>
-                      <option value="Technology">Technology</option>
-                    </select> 
+                      <option value="Fashion.html">Fashion</option>
+                      <option value="Home.html">Home</option>
+                      <option value="Technology.html">Technology</option>
+                      <option value="SportsAndFitness.html">Sports and Fitness</option>
+                      <option value="Toys.html">Toys</option>
+                      <option value="Health.html">Health</option>
+                      <option value="BeautyAndSelfcare.html">Beauty and Selfcare</option>
+                    </select>
                 </li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
-        <button class="btn"> <a href="sign-in.html" >Sign In </a></button>
+        <div class="user-actions">
+            <div class="cart-wishlist-icons">
+                <a href="#" id="wishlist-icon" class="icon-btn" title="Wishlist">
+                    <i class="fas fa-heart"></i>
+                    <span class="wishlist-count">0</span>
+                </a>
+                <a href="#" id="cart-icon" class="icon-btn" title="Cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">0</span>
+                </a>
+            </div>
+            <button class="btn"><a href="sign-in.html">Sign In</a></button>
+        </div>
         </div>
     </header>
     <main>
@@ -48,18 +66,18 @@
         <section id="categories" class="categories">
             <h2>Popular Categories</h2>
             <div class="category-list">
-                <div class="category-card">
+                <a href="Electronics.html" class="category-card">
                     <img src="assets/electronics.jpg" alt="Electronics">
                     <h3>Electronics</h3>
-                </div>
-                <div class="category-card">
+                </a>
+                <a href="Fashion.html" class="category-card">
                     <img src="assets/fashion.jpg" alt="Fashion">
                     <h3>Fashion</h3>
-                </div>
-                <div class="category-card">
-                    <img src="assets/home.jpg" alt="Supermarket">
+                </a>
+                <a href="Home.html" class="category-card">
+                    <img src="assets/home.jpg" alt="Home">
                     <h3>Home</h3>
-                </div>
+                </a>
         </section>
         
     </main>
@@ -67,6 +85,8 @@
         <p>&copy; 2025 HT easy - All Rights Reserved</p>
     </footer>
     <script src="script.js"></script>
+    <script src="assets/src/cart.js"></script>
+    <script src="assets/src/wishlist.js"></script>
     
 </body>
 </html>

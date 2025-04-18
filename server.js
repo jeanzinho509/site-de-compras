@@ -11,6 +11,9 @@ const authRoutes = require('./server/routes/auth.routes');
 const userRoutes = require('./server/routes/user.routes');
 const productRoutes = require('./server/routes/product.routes');
 const categoryRoutes = require('./server/routes/category.routes');
+const cartRoutes = require('./server/routes/cart.routes');
+const wishlistRoutes = require('./server/routes/wishlist.routes');
+const uploadRoutes = require('./server/routes/upload.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,11 +26,17 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static files
 app.use(express.static(path.join(__dirname, '/')));
 
+// Serve uploaded files
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/upload', uploadRoutes);
 
 // Serve the main HTML file for any other route
 app.get('*', (req, res) => {

@@ -91,6 +91,49 @@ body.menu-open {
   font-weight: bold;
 }
 
+/* User actions (cart, wishlist, sign in) */
+.user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cart-wishlist-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.icon-btn {
+  position: relative;
+  color: white;
+  font-size: 1.2rem;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover {
+  color: #f1f1f1;
+}
+
+.cart-count,
+.wishlist-count {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff6b6b;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: bold;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .hero {
   background: url('hero.jpg') no-repeat center center/cover;
   color: black;
@@ -174,8 +217,11 @@ body.menu-open {
     flex-wrap: wrap;
   }
 
-  .btn {
+  .user-actions {
     margin-left: auto;
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: flex-end;
   }
 
   .hero-content {

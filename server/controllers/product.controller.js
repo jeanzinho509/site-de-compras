@@ -7,25 +7,92 @@ exports.getAllProducts = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
     
-    // Get products with pagination
-    const [products] = await pool.query(
-      `SELECT p.*, c.name as category_name, 
-       (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as review_count,
-       (SELECT AVG(rating) FROM reviews r WHERE r.product_id = p.id) as average_rating
-       FROM products p
-       LEFT JOIN categories c ON p.category_id = c.id
-       WHERE p.status = 'active'
-       ORDER BY p.created_at DESC
-       LIMIT ? OFFSET ?`,
-      [limit, offset]
-    );
+    // Extract filter parameters
+    const minPrice = req.query.min_price ? parseFloat(req.query.min_price) : null;
+    const maxPrice = req.query.max_price ? parseFloat(req.query.max_price) : null;
+    const minRating = req.query.min_rating ? parseFloat(req.query.min_rating) : null;
+    const inStock = req.query.in_stock === 'true';
+    const sortBy = ['title', 'price', 'created_at', 'average_rating'].includes(req.query.sort_by) 
+      ? req.query.sort_by 
+      : 'created_at';
+    const sortOrder = req.query.sort_order === 'asc' ? 'ASC' : 'DESC';
     
-    // Get total count for pagination
-    const [countResult] = await pool.query(
-      'SELECT COUNT(*) as total FROM products WHERE status = "active"'
-    );
+    // Build query conditions
+    let conditions = ['p.status = "active"'];
+    let params = [];
     
-    const totalProducts = countResult[0].total;
+    if (minPrice !== null) {
+      conditions.push('p.price >= ?');
+      params.push(minPrice);
+    }
+    
+    if (maxPrice !== null) {
+      conditions.push('p.price <= ?');
+      params.push(maxPrice);
+    }
+    
+    if (inStock) {
+      conditions.push('p.quantity > 0');
+    }
+    
+    // Build the query
+    let query = `
+      SELECT p.*, c.name as category_name, 
+      (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as review_count,
+      (SELECT AVG(rating) FROM reviews r WHERE r.product_id = p.id) as average_rating
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      WHERE ${conditions.join(' AND ')}
+    `;
+    
+    // Add having clause for rating filter if needed
+    if (minRating !== null) {
+      query += ` HAVING average_rating >= ?`;
+      params.push(minRating);
+    }
+    
+    // Add sorting
+    if (sortBy === 'average_rating') {
+      query += ` ORDER BY average_rating ${sortOrder}, p.created_at DESC`;
+    } else {
+      query += ` ORDER BY p.${sortBy} ${sortOrder}`;
+    }
+    
+    // Add pagination
+    query += ` LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+    
+    // Execute the query
+    const [products] = await pool.query(query, params);
+    
+    // Build count query with the same conditions
+    let countQuery = `
+      SELECT COUNT(*) as total 
+      FROM products p
+      WHERE ${conditions.join(' AND ')}
+    `;
+    
+    let countParams = [...params.slice(0, params.length - 2)]; // Remove limit and offset
+    
+    // Execute count query
+    const [countResult] = await pool.query(countQuery, countParams);
+    
+    // If we have a rating filter, we need to count manually
+    let totalProducts = countResult[0].total;
+    
+    if (minRating !== null) {
+      // Count products that meet the rating criteria
+      const filteredProducts = await Promise.all(products.map(async (product) => {
+        const [ratingResult] = await pool.query(
+          'SELECT AVG(rating) as avg_rating FROM reviews WHERE product_id = ?',
+          [product.id]
+        );
+        return ratingResult[0].avg_rating >= minRating ? product : null;
+      }));
+      
+      totalProducts = filteredProducts.filter(p => p !== null).length;
+    }
+    
     const totalPages = Math.ceil(totalProducts / limit);
     
     res.status(200).json({
@@ -42,7 +109,6 @@ exports.getAllProducts = async (req, res) => {
     res.status(500).json({ message: 'Server error while fetching products' });
   }
 };
-
 // Get product by ID
 exports.getProductById = async (req, res) => {
   try {
@@ -93,7 +159,6 @@ exports.getProductById = async (req, res) => {
     res.status(500).json({ message: 'Server error while fetching product' });
   }
 };
-
 // Get products by category
 exports.getProductsByCategory = async (req, res) => {
   try {
@@ -102,26 +167,92 @@ exports.getProductsByCategory = async (req, res) => {
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
     
-    // Get products by category with pagination
-    const [products] = await pool.query(
-      `SELECT p.*, c.name as category_name, 
-       (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as review_count,
-       (SELECT AVG(rating) FROM reviews r WHERE r.product_id = p.id) as average_rating
-       FROM products p
-       LEFT JOIN categories c ON p.category_id = c.id
-       WHERE p.category_id = ? AND p.status = 'active'
-       ORDER BY p.created_at DESC
-       LIMIT ? OFFSET ?`,
-      [categoryId, limit, offset]
-    );
+    // Extract filter parameters
+    const minPrice = req.query.min_price ? parseFloat(req.query.min_price) : null;
+    const maxPrice = req.query.max_price ? parseFloat(req.query.max_price) : null;
+    const minRating = req.query.min_rating ? parseFloat(req.query.min_rating) : null;
+    const inStock = req.query.in_stock === 'true';
+    const sortBy = ['title', 'price', 'created_at', 'average_rating'].includes(req.query.sort_by) 
+      ? req.query.sort_by 
+      : 'created_at';
+    const sortOrder = req.query.sort_order === 'asc' ? 'ASC' : 'DESC';
     
-    // Get total count for pagination
-    const [countResult] = await pool.query(
-      'SELECT COUNT(*) as total FROM products WHERE category_id = ? AND status = "active"',
-      [categoryId]
-    );
+    // Build query conditions
+    let conditions = ['p.category_id = ? AND p.status = "active"'];
+    let params = [categoryId];
     
-    const totalProducts = countResult[0].total;
+    if (minPrice !== null) {
+      conditions.push('p.price >= ?');
+      params.push(minPrice);
+    }
+    
+    if (maxPrice !== null) {
+      conditions.push('p.price <= ?');
+      params.push(maxPrice);
+    }
+    
+    if (inStock) {
+      conditions.push('p.quantity > 0');
+    }
+    
+    // Build the query
+    let query = `
+      SELECT p.*, c.name as category_name, 
+      (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as review_count,
+      (SELECT AVG(rating) FROM reviews r WHERE r.product_id = p.id) as average_rating
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      WHERE ${conditions.join(' AND ')}
+    `;
+    
+    // Add having clause for rating filter if needed
+    if (minRating !== null) {
+      query += ` HAVING average_rating >= ?`;
+      params.push(minRating);
+    }
+    
+    // Add sorting
+    if (sortBy === 'average_rating') {
+      query += ` ORDER BY average_rating ${sortOrder}, p.created_at DESC`;
+    } else {
+      query += ` ORDER BY p.${sortBy} ${sortOrder}`;
+    }
+    
+    // Add pagination
+    query += ` LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+    
+    // Execute the query
+    const [products] = await pool.query(query, params);
+    
+    // Build count query with the same conditions
+    let countQuery = `
+      SELECT COUNT(*) as total 
+      FROM products p
+      WHERE ${conditions.join(' AND ')}
+    `;
+    
+    let countParams = [...params.slice(0, params.length - 2)]; // Remove limit and offset
+    
+    // Execute count query
+    const [countResult] = await pool.query(countQuery, countParams);
+    
+    // If we have a rating filter, we need to count manually
+    let totalProducts = countResult[0].total;
+    
+    if (minRating !== null) {
+      // Count products that meet the rating criteria
+      const filteredProducts = await Promise.all(products.map(async (product) => {
+        const [ratingResult] = await pool.query(
+          'SELECT AVG(rating) as avg_rating FROM reviews WHERE product_id = ?',
+          [product.id]
+        );
+        return ratingResult[0].avg_rating >= minRating ? product : null;
+      }));
+      
+      totalProducts = filteredProducts.filter(p => p !== null).length;
+    }
+    
     const totalPages = Math.ceil(totalProducts / limit);
     
     res.status(200).json({
@@ -142,31 +273,108 @@ exports.getProductsByCategory = async (req, res) => {
 // Search products
 exports.searchProducts = async (req, res) => {
   try {
-    const query = req.params.query;
+    const searchQuery = req.params.query;
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
     const offset = (page - 1) * limit;
     
-    // Search products with pagination
-    const [products] = await pool.query(
-      `SELECT p.*, c.name as category_name, 
-       (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as review_count,
-       (SELECT AVG(rating) FROM reviews r WHERE r.product_id = p.id) as average_rating
-       FROM products p
-       LEFT JOIN categories c ON p.category_id = c.id
-       WHERE (p.title LIKE ? OR p.description LIKE ?) AND p.status = 'active'
-       ORDER BY p.created_at DESC
-       LIMIT ? OFFSET ?`,
-      [`%${query}%`, `%${query}%`, limit, offset]
-    );
+    // Extract filter parameters
+    const minPrice = req.query.min_price ? parseFloat(req.query.min_price) : null;
+    const maxPrice = req.query.max_price ? parseFloat(req.query.max_price) : null;
+    const minRating = req.query.min_rating ? parseFloat(req.query.min_rating) : null;
+    const inStock = req.query.in_stock === 'true';
+    const categoryId = req.query.category_id ? parseInt(req.query.category_id) : null;
+    const sortBy = ['title', 'price', 'created_at', 'average_rating'].includes(req.query.sort_by) 
+      ? req.query.sort_by 
+      : 'created_at';
+    const sortOrder = req.query.sort_order === 'asc' ? 'ASC' : 'DESC';
     
-    // Get total count for pagination
-    const [countResult] = await pool.query(
-      'SELECT COUNT(*) as total FROM products WHERE (title LIKE ? OR description LIKE ?) AND status = "active"',
-      [`%${query}%`, `%${query}%`]
-    );
+    // Build query conditions
+    let conditions = ['p.status = "active"'];
+    let params = [];
     
-    const totalProducts = countResult[0].total;
+    // Search in title, description, and category name
+    conditions.push('(p.title LIKE ? OR p.description LIKE ? OR c.name LIKE ?)');
+    params.push(`%${searchQuery}%`, `%${searchQuery}%`, `%${searchQuery}%`);
+    
+    if (categoryId !== null) {
+      conditions.push('p.category_id = ?');
+      params.push(categoryId);
+    }
+    
+    if (minPrice !== null) {
+      conditions.push('p.price >= ?');
+      params.push(minPrice);
+    }
+    
+    if (maxPrice !== null) {
+      conditions.push('p.price <= ?');
+      params.push(maxPrice);
+    }
+    
+    if (inStock) {
+      conditions.push('p.quantity > 0');
+    }
+    
+    // Build the query
+    let query = `
+      SELECT p.*, c.name as category_name, 
+      (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id) as review_count,
+      (SELECT AVG(rating) FROM reviews r WHERE r.product_id = p.id) as average_rating
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      WHERE ${conditions.join(' AND ')}
+    `;
+    
+    // Add having clause for rating filter if needed
+    if (minRating !== null) {
+      query += ` HAVING average_rating >= ?`;
+      params.push(minRating);
+    }
+    
+    // Add sorting
+    if (sortBy === 'average_rating') {
+      query += ` ORDER BY average_rating ${sortOrder}, p.created_at DESC`;
+    } else {
+      query += ` ORDER BY p.${sortBy} ${sortOrder}`;
+    }
+    
+    // Add pagination
+    query += ` LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+    
+    // Execute the query
+    const [products] = await pool.query(query, params);
+    
+    // Build count query with the same conditions
+    let countQuery = `
+      SELECT COUNT(*) as total 
+      FROM products p
+      LEFT JOIN categories c ON p.category_id = c.id
+      WHERE ${conditions.join(' AND ')}
+    `;
+    
+    let countParams = [...params.slice(0, params.length - 2)]; // Remove limit and offset
+    
+    // Execute count query
+    const [countResult] = await pool.query(countQuery, countParams);
+    
+    // If we have a rating filter, we need to count manually
+    let totalProducts = countResult[0].total;
+    
+    if (minRating !== null) {
+      // Count products that meet the rating criteria
+      const filteredProducts = await Promise.all(products.map(async (product) => {
+        const [ratingResult] = await pool.query(
+          'SELECT AVG(rating) as avg_rating FROM reviews WHERE product_id = ?',
+          [product.id]
+        );
+        return ratingResult[0].avg_rating >= minRating ? product : null;
+      }));
+      
+      totalProducts = filteredProducts.filter(p => p !== null).length;
+    }
+    
     const totalPages = Math.ceil(totalProducts / limit);
     
     res.status(200).json({
