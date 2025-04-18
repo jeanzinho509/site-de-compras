@@ -21,4 +21,15 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.classList.remove('menu-open');
         }
     });
+    
+    // Handle category dropdown navigation
+    const categoriesList = document.getElementById('categories-list');
+    if (categoriesList) {
+        categoriesList.addEventListener('change', (e) => {
+            const selectedValue = e.target.value;
+            if (selectedValue !== 'Categories') {
+                window.location.href = selectedValue;
+            }
+        });
+    }
 });

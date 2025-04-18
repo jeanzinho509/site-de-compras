@@ -1,5 +1,8 @@
 // script.js
 document.addEventListener('DOMContentLoaded', function() {
+  // API URL
+  const API_URL = '/api';
+  
   // DOM elements
   const loginCard = document.getElementById('login-card');
   const registerCard = document.getElementById('register-card');
@@ -39,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
       loginCard.style.display = 'block';
   });
   
-  // Form validation
-  loginForm.addEventListener('submit', (e) => {
+  // Form validation and submission
+  loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
@@ -68,14 +71,38 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       if (valid) {
-          // Here you would normally send the data to your server
-          alert('Login successful! This would normally redirect to your dashboard.');
-          // Mock implementation - in real world, you'd make an API call
-          console.log('Login form submitted with:', { email, password });
+          try {
+              const response = await fetch(`${API_URL}/auth/login`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ email, password })
+              });
+              
+              const data = await response.json();
+              
+              if (response.ok) {
+                  // Store token in localStorage
+                  localStorage.setItem('token', data.token);
+                  localStorage.setItem('user', JSON.stringify(data.user));
+                  
+                  // Redirect to home page
+                  window.location.href = '/index.html';
+              } else {
+                  // Show error message
+                  passwordError.textContent = data.message || 'Login failed. Please check your credentials.';
+                  passwordError.style.display = 'block';
+              }
+          } catch (error) {
+              console.error('Login error:', error);
+              passwordError.textContent = 'An error occurred. Please try again later.';
+              passwordError.style.display = 'block';
+          }
       }
   });
   
-  registerForm.addEventListener('submit', (e) => {
+  registerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('name').value;
       const email = document.getElementById('register-email').value;
@@ -124,14 +151,38 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       if (valid) {
-          // Here you would normally send the data to your server
-          alert('Account created successfully! This would normally redirect to your dashboard.');
-          // Mock implementation - in real world, you'd make an API call
-          console.log('Register form submitted with:', { name, email, password });
+          try {
+              const response = await fetch(`${API_URL}/auth/register`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ name, email, password, phone: '' })
+              });
+              
+              const data = await response.json();
+              
+              if (response.ok) {
+                  // Store token in localStorage
+                  localStorage.setItem('token', data.token);
+                  localStorage.setItem('user', JSON.stringify(data.user));
+                  
+                  // Redirect to home page
+                  window.location.href = '/index.html';
+              } else {
+                  // Show error message
+                  emailError.textContent = data.message || 'Registration failed. Please try again.';
+                  emailError.style.display = 'block';
+              }
+          } catch (error) {
+              console.error('Registration error:', error);
+              emailError.textContent = 'An error occurred. Please try again later.';
+              emailError.style.display = 'block';
+          }
       }
   });
   
-  forgotPasswordForm.addEventListener('submit', (e) => {
+  forgotPasswordForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('reset-email').value;
       const emailError = document.getElementById('reset-email-error');
@@ -149,14 +200,34 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       if (valid) {
-          // Here you would normally send the data to your server
-          alert('Password reset link sent! Check your email.');
-          // Mock implementation - in real world, you'd make an API call
-          console.log('Reset password request for:', email);
-          
-          // Show login form again
-          forgotPasswordCard.style.display = 'none';
-          loginCard.style.display = 'block';
+          try {
+              const response = await fetch(`${API_URL}/auth/forgot-password`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ email })
+              });
+              
+              const data = await response.json();
+              
+              if (response.ok) {
+                  // Show success message
+                  alert('Password reset link sent! Please check your email.');
+                  
+                  // Show login form again
+                  forgotPasswordCard.style.display = 'none';
+                  loginCard.style.display = 'block';
+              } else {
+                  // Show error message
+                  emailError.textContent = data.message || 'Failed to send reset link. Please try again.';
+                  emailError.style.display = 'block';
+              }
+          } catch (error) {
+              console.error('Forgot password error:', error);
+              emailError.textContent = 'An error occurred. Please try again later.';
+              emailError.style.display = 'block';
+          }
       }
   });
   

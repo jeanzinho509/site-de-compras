@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTeasy - Electronics</title>
+    <title>HTeasy - Technology: Audio & Video</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -25,6 +25,40 @@
             max-width: 800px;
             margin: 0 auto;
             color: #666;
+        }
+        
+        .subcategory-nav {
+            background-color: #e9ecef;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .subcategory-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .subcategory-list li a {
+            display: block;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            color: #333;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .subcategory-list li a:hover {
+            background-color: #ddd;
+        }
+        
+        .subcategory-list li a.active {
+            background-color: #256AF5;
+            color: white;
         }
         
         .products-container {
@@ -195,6 +229,11 @@
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
+            
+            .subcategory-list {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
 </head>
@@ -217,15 +256,15 @@
                     <select id="categories-list" name="categories-list">
                       <option value="Categories">Categories</option>
                       <option value="Vehicles.html">Vehicles</option>
-                      <option value="Electronics.html" selected>Electronics</option>
+                      <option value="Electronics.html">Electronics</option>
                       <option value="Fashion.html">Fashion</option>
                       <option value="Home.html">Home</option>
-                      <option value="Technology.html">Technology</option>
+                      <option value="Technology.html" selected>Technology</option>
                       <option value="SportsAndFitness.html">Sports and Fitness</option>
                       <option value="Toys.html">Toys</option>
                       <option value="Health.html">Health</option>
                       <option value="BeautyAndSelfcare.html">Beauty and Selfcare</option>
-                    </select>
+                    </select> 
                 </li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="#contact">Contact</a></li>
@@ -250,10 +289,21 @@
     <main>
         <section class="category-header">
             <div class="container">
-                <h1 class="category-title">Electronics</h1>
-                <p class="category-description">Discover the latest electronics and gadgets at unbeatable prices. From smartphones to laptops, cameras to audio equipment, find everything you need.</p>
+                <h1 class="category-title">Technology: Audio & Video</h1>
+                <p class="category-description">Discover premium audio and video equipment for entertainment and professional use. From speakers and headphones to cameras and projectors, find the perfect devices for an immersive multimedia experience.</p>
             </div>
         </section>
+        
+        <nav class="subcategory-nav">
+            <ul class="subcategory-list">
+                <li><a href="Technology.html">All Technology</a></li>
+                <li><a href="Technology-Games.html">Games</a></li>
+                <li><a href="Technology-Electronics.html">Electronics</a></li>
+                <li><a href="Technology-AudioVideo.html" class="active">Audio & Video</a></li>
+                <li><a href="Technology-Informatique.html">Informatique</a></li>
+                <li><a href="Technology-CellphoneAndTelephone.html">Cellphone & Telephone</a></li>
+            </ul>
+        </nav>
         
         <section class="products-container">
             <div class="filters-section">
@@ -357,91 +407,91 @@
                     const mockProducts = [
                         {
                             id: 1,
-                            title: 'Smartphone X Pro',
-                            description: 'Latest smartphone with advanced features',
-                            price: 799.99,
-                            discount_price: 749.99,
-                            image_url: 'https://via.placeholder.com/300x300?text=Smartphone',
+                            title: 'Wireless Bluetooth Speaker',
+                            description: 'Portable speaker with 360° sound and 20-hour battery life',
+                            price: 129.99,
+                            discount_price: 99.99,
+                            image_url: 'https://via.placeholder.com/300x300?text=Speaker',
                             average_rating: 4.7,
-                            review_count: 128,
-                            quantity: 25
+                            review_count: 156,
+                            quantity: 45
                         },
                         {
                             id: 2,
-                            title: 'Wireless Headphones',
-                            description: 'Premium noise-cancelling headphones',
-                            price: 199.99,
-                            discount_price: 179.99,
-                            image_url: 'https://via.placeholder.com/300x300?text=Headphones',
-                            average_rating: 4.5,
-                            review_count: 89,
-                            quantity: 42
+                            title: '4K Ultra HD Smart TV',
+                            description: '55-inch 4K television with smart features',
+                            price: 799.99,
+                            discount_price: 699.99,
+                            image_url: 'https://via.placeholder.com/300x300?text=TV',
+                            average_rating: 4.8,
+                            review_count: 124,
+                            quantity: 20
                         },
                         {
                             id: 3,
-                            title: 'Laptop Ultra Slim',
-                            description: 'Powerful and lightweight laptop',
-                            price: 1299.99,
-                            discount_price: 1199.99,
-                            image_url: 'https://via.placeholder.com/300x300?text=Laptop',
-                            average_rating: 4.8,
-                            review_count: 56,
-                            quantity: 10
+                            title: 'Noise-Cancelling Headphones',
+                            description: 'Premium wireless headphones with active noise cancellation',
+                            price: 249.99,
+                            discount_price: 199.99,
+                            image_url: 'https://via.placeholder.com/300x300?text=Headphones',
+                            average_rating: 4.9,
+                            review_count: 187,
+                            quantity: 35
                         },
                         {
                             id: 4,
-                            title: 'Smart Watch',
-                            description: 'Track your fitness and stay connected',
-                            price: 249.99,
-                            discount_price: 229.99,
-                            image_url: 'https://via.placeholder.com/300x300?text=SmartWatch',
-                            average_rating: 4.3,
-                            review_count: 72,
-                            quantity: 30
+                            title: 'Home Theater System',
+                            description: '5.1 surround sound system for immersive audio',
+                            price: 499.99,
+                            discount_price: 449.99,
+                            image_url: 'https://via.placeholder.com/300x300?text=HomeTheater',
+                            average_rating: 4.6,
+                            review_count: 92,
+                            quantity: 15
                         },
                         {
                             id: 5,
-                            title: 'Bluetooth Speaker',
-                            description: 'Portable speaker with amazing sound quality',
-                            price: 89.99,
-                            discount_price: 79.99,
-                            image_url: 'https://via.placeholder.com/300x300?text=Speaker',
-                            average_rating: 4.2,
-                            review_count: 45,
-                            quantity: 18
+                            title: 'Digital Camera',
+                            description: 'Professional DSLR camera with 24MP sensor',
+                            price: 899.99,
+                            discount_price: 799.99,
+                            image_url: 'https://via.placeholder.com/300x300?text=Camera',
+                            average_rating: 4.7,
+                            review_count: 78,
+                            quantity: 12
                         },
                         {
                             id: 6,
-                            title: 'Digital Camera',
-                            description: 'Professional-grade camera for stunning photos',
-                            price: 699.99,
-                            discount_price: 649.99,
-                            image_url: 'https://via.placeholder.com/300x300?text=Camera',
-                            average_rating: 4.6,
-                            review_count: 38,
-                            quantity: 7
+                            title: 'Portable Projector',
+                            description: 'Compact HD projector for home and travel',
+                            price: 349.99,
+                            discount_price: 299.99,
+                            image_url: 'https://via.placeholder.com/300x300?text=Projector',
+                            average_rating: 4.5,
+                            review_count: 65,
+                            quantity: 25
                         },
                         {
                             id: 7,
-                            title: 'Gaming Console',
-                            description: 'Next-gen gaming experience',
-                            price: 499.99,
-                            discount_price: 479.99,
-                            image_url: 'https://via.placeholder.com/300x300?text=Console',
-                            average_rating: 4.9,
-                            review_count: 112,
-                            quantity: 5
+                            title: 'Vinyl Record Player',
+                            description: 'Classic turntable with modern connectivity',
+                            price: 179.99,
+                            discount_price: 149.99,
+                            image_url: 'https://via.placeholder.com/300x300?text=RecordPlayer',
+                            average_rating: 4.4,
+                            review_count: 56,
+                            quantity: 18
                         },
                         {
                             id: 8,
-                            title: 'Wireless Earbuds',
-                            description: 'Compact earbuds with crystal clear sound',
-                            price: 129.99,
-                            discount_price: 119.99,
-                            image_url: 'https://via.placeholder.com/300x300?text=Earbuds',
-                            average_rating: 4.4,
-                            review_count: 67,
-                            quantity: 22
+                            title: 'Streaming Media Player',
+                            description: '4K streaming device for your favorite content',
+                            price: 69.99,
+                            discount_price: 59.99,
+                            image_url: 'https://via.placeholder.com/300x300?text=MediaPlayer',
+                            average_rating: 4.6,
+                            review_count: 112,
+                            quantity: 40
                         }
                     ];
                     
@@ -455,7 +505,7 @@
                     
                     // In a real implementation, this would be:
                     /*
-                    const response = await fetch(`/api/categories/1/products?page=${currentPage}&limit=${productsPerPage}&sort_by=${filters.sortBy}&min_price=${filters.minPrice}&max_price=${filters.maxPrice}&min_rating=${filters.minRating}&in_stock=${filters.inStock}`);
+                    const response = await fetch(`/api/categories/technology/audio-video/products?page=${currentPage}&limit=${productsPerPage}&sort_by=${filters.sortBy}&min_price=${filters.minPrice}&max_price=${filters.maxPrice}&min_rating=${filters.minRating}&in_stock=${filters.inStock}`);
                     return await response.json();
                     */
                 } catch (error) {
