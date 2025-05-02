@@ -2,7 +2,7 @@
 
 /* Variables */
 :root {
-  --primary-color: #3498db;
+  --primary-color:rgb(250, 204, 0);
   --secondary-color: #2ecc71;
   --danger-color: #e74c3c;
   --warning-color: #f39c12;
@@ -26,7 +26,7 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-color);
-  background-color: #f5f7fa;
+  background-color:rgb(241, 219, 20);
   line-height: 1.6;
 }
 
